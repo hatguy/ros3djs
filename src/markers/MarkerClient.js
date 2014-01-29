@@ -51,5 +51,23 @@ ROS3D.MarkerClient = function(options) {
 
     that.emit('change');
   });
+  // function to add markers, used by markerArrayClient
+  that.addMarker = function(message) {
+
+    var newMarker = new ROS3D.Marker({
+      message : message
+    });
+
+    that.rootObject.remove(that.markers[message.id]);
+
+    that.markers[message.id] = new ROS3D.SceneNode({
+      frameID : message.header.frame_id,
+      tfClient : that.tfClient,
+      object : newMarker
+    });
+    that.rootObject.add(that.markers[message.id]);
+
+    that.emit('change');
+  };
 };
 ROS3D.MarkerClient.prototype.__proto__ = EventEmitter2.prototype;
